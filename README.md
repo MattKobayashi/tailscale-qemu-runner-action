@@ -77,6 +77,10 @@ The APT mirror to configure in the self-hosted runner VM. Defaults to `http://ar
 
 The number of CPUs to allocate to the self-hosted runner VM. Defaults to `4`.
 
+### `gha-runner-disk`
+
+The size of the self-hosted runner VM disk. Defaults to `16G`.
+
 ### `gha-runner-mem`
 
 The amount of memory to allocate to the self-hosted runner VM in megabytes. Optionally, a suffix of “M” or “G” can be used to signify a value in megabytes or gigabytes respectively. Defaults to `16G`.
