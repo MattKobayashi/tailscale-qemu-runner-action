@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - action.yaml
+      - '.github/workflows/**.yaml'
 jobs:
   create-runner:
     name: Create self-hosted runner VM
