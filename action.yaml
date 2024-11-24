@@ -235,7 +235,7 @@ runs:
           - [ su, runner, --preserve-environment, -c, "/opt/actions-runner/setup.sh" ]
           - [ npm, install, --global, smee-client ]
           - [ smee, --url, ${{ inputs.smee-url }}, --path, /webhook, --port, 8000, "&" ]
-          - [ python3, /opt/actions-runner/webhook.py, "&" ]
+          - [ su, runner, --preserve-environment, -c, "/opt/actions-runner/webhook.py", "&" ]
         timezone: "${{ inputs.gha-runner-tz }}"
         users:
           - name: runner
@@ -244,13 +244,14 @@ runs:
             sudo: ALL=(ALL) NOPASSWD:ALL
         write_files:
           - content: |
+              #!/usr/bin/python3
               from fastapi import FastAPI
               from pydantic import BaseModel
               from typing import List, Optional
               import os
               import sys
-              
-              
+
+
               class WorkflowStep(BaseModel):
                   name: str
                   status: str
@@ -258,8 +259,8 @@ runs:
                   number: int
                   started_at: Optional[str]
                   completed_at: Optional[str]
-              
-              
+
+
               class WorkflowJob(BaseModel):
                   id: int
                   run_id: int
@@ -284,25 +285,21 @@ runs:
                   workflow_name: Optional[str]
                   head_branch: Optional[str]
                   created_at: str
-              
-              
-              class WorkflowJobWrapper(BaseModel):
+
+
+              class Payload(BaseModel):
                   action: str
                   workflow_job: WorkflowJob
-              
-              
-              class Payload(BaseModel):
-                  workflow_job: WorkflowJobWrapper
-              
-              
+
+
               app = FastAPI()
-              
-              
+
+
               @app.post("/webhook")
               async def github_webhook(payload: Payload):
                   if (
-                      payload.workflow_job.action == "completed"
-                      and payload.workflow_job.workflow_job.runner_name
+                      payload.action == "completed"
+                      and payload.workflow_job.runner_name
                       == "${{ steps.generate-runner-id.outputs.runner-id }}"
                   ):
                       if sys.platform.startswith("linux"):
@@ -311,11 +308,11 @@ runs:
                       else:
                           return {"error": "This endpoint only works on Linux systems"}
                   return {"error": "Invalid payload structure"}
-              
-              
+
+
               if __name__ == "__main__":
                   import uvicorn
-              
+
                   uvicorn.run(app, host="127.0.0.1", port=8000)
             defer: true
             owner: runner:users
