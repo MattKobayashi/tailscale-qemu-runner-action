@@ -179,38 +179,6 @@ runs:
                 -----END PGP PUBLIC KEY BLOCK-----
             git-core:
               source: 'ppa:git-core/ppa'
-            npm:
-              source: 'deb [arch=amd64] https://deb.nodesource.com/node_20.x nodistro main'
-              key: |
-                -----BEGIN PGP PUBLIC KEY BLOCK-----
-
-                mQENBFdDN1ABCADaNd/I3j3tn40deQNgz7hB2NvT+syXe6k4ZmdiEcOfBvFrkS8B
-                hNS67t93etHsxEy7E0qwsZH32bKazMqe9zDwoa3aVImryjh6SHC9lMtW27JPHFeM
-                Srkt9YmH1WMwWcRO6eSY9B3PpazquhnvbammLuUojXRIxkDroy6Fw4UKmUNSRr32
-                9Ej87jRoR1B2/57Kfp2Y4+vFGGzSvh3AFQpBHq51qsNHALU6+8PjLfIt+5TPvaWR
-                TB+kAZnQZkaIQM2nr1n3oj6ak2RATY/+kjLizgFWzgEfbCrbsyq68UoY5FPBnu4Z
-                E3iDZpaIqwKr0seUC7iA1xM5eHi5kty1oB7HABEBAAG0Ik5Tb2xpZCA8bnNvbGlk
-                LWdwZ0Bub2Rlc291cmNlLmNvbT6JATgEEwECACIFAldDN1ACGwMGCwkIBwMCBhUI
-                AgkKCwQWAgMBAh4BAheAAAoJEC9ZtfmbG+C0y7wH/i4xnab36dtrYW7RZwL8i6Sc
-                NjMx4j9+U1kr/F6YtqWd+JwCbBdar5zRghxPcYEq/qf7MbgAYcs1eSOuTOb7n7+o
-                xUwdH2iCtHhKh3Jr2mRw1ks7BbFZPB5KmkxHaEBfLT4d+I91ZuUdPXJ+0SXs9gzk
-                Dbz65Uhoz3W03aiF8HeL5JNARZFMbHHNVL05U1sTGTCOtu+1c/33f3TulQ/XZ3Y4
-                hwGCpLe0Tv7g7Lp3iLMZMWYPEa0a7S4u8he5IEJQLd8bE8jltcQvrdr3Fm8kI2Jg
-                BJmUmX4PSfhuTCFaR/yeCt3UoW883bs9LfbTzIx9DJGpRIu8Y0IL3b4sj/GoZVq5
-                AQ0EV0M3UAEIAKrTaC62ayzqOIPa7nS90BHHck4Z33a2tZF/uof38xNOiyWGhT8u
-                JeFoTTHn5SQq5Ftyu4K3K2fbbpuu/APQF05AaljzVkDGNMW4pSkgOasdysj831cu
-                ssrHX2RYS22wg80k6C/Hwmh5F45faEuNxsV+bPx7oPUrt5n6GMx84vEP3i1+FDBi
-                0pt/B/QnDFBXki1BGvJ35f5NwDefK8VaInxXP3ZN/WIbtn5dqxppkV/YkO7GiJlp
-                Jlju9rf3kKUIQzKQWxFsbCAPIHoWv7rH9RSxgDithXtG6Yg5R1aeBbJaPNXL9wpJ
-                YBJbiMjkAFaz4B95FOqZm3r7oHugiCGsHX0AEQEAAYkBHwQYAQIACQUCV0M3UAIb
-                DAAKCRAvWbX5mxvgtE/OB/0VN88DR3Y3fuqy7lq/dthkn7Dqm9YXdorZl3L152eE
-                IF882aG8FE3qZdaLGjQO4oShAyNWmRfSGuoH0XERXAI9n0r8m4mDMxE6rtP7tHet
-                y/5M8x3CTyuMgx5GLDaEUvBusnTD+/v/fBMwRK/cZ9du5PSG4R50rtst+oYyC2ao
-                x4I2SgjtF/cY7bECsZDplzatN3gv34PkcdIg8SLHAVlL4N5tzumDeizRspcSyoy2
-                K2+hwKU4C4+dekLLTg8rjnRROvplV2KtaEk6rxKtIRFDCoQng8wfJuIMrDNKvqZw
-                FRGt7cbvW5MCnuH8MhItOl9Uxp1wHp6gtav/h8Gp6MBa
-                =MARt
-                -----END PGP PUBLIC KEY BLOCK-----
         groups:
           - docker
           - users
@@ -224,18 +192,12 @@ runs:
           - git
           - git-lfs
           - jq
-          - nodejs
-          - python3-fastapi
-          - python3-pydantic
           - sudo
           - unzip
           - zip
         runcmd:
           - [ mkdir, -p, /opt/actions-runner ]
-          - [ su, runner, --preserve-environment, -c, "/opt/actions-runner/setup.sh" ]
-          - [ npm, install, --global, smee-client ]
-          - [ smee, --url, ${{ inputs.smee-url }}, --path, /webhook, --port, 8000, "&" ]
-          - [ su, runner, --preserve-environment, -c, "/opt/actions-runner/webhook.py", "&" ]
+          - [ su, runner, --preserve-environment, -c, "/opt/actions-runner/start.sh" ]
         timezone: "${{ inputs.gha-runner-tz }}"
         users:
           - name: runner
@@ -244,105 +206,17 @@ runs:
             sudo: ALL=(ALL) NOPASSWD:ALL
         write_files:
           - content: |
-              #!/usr/bin/python3
-              from fastapi import FastAPI
-              from pydantic import BaseModel
-              from typing import List, Optional
-              import os
-              import sys
-
-
-              class WorkflowStep(BaseModel):
-                  name: str
-                  status: str
-                  conclusion: Optional[str]
-                  number: int
-                  started_at: Optional[str]
-                  completed_at: Optional[str]
-
-
-              class WorkflowJob(BaseModel):
-                  id: int
-                  run_id: int
-                  run_url: str
-                  run_attempt: int
-                  node_id: str
-                  head_sha: str
-                  url: str
-                  html_url: str
-                  status: str
-                  conclusion: Optional[str]
-                  started_at: str
-                  completed_at: Optional[str]
-                  name: str
-                  steps: List[WorkflowStep]
-                  check_run_url: str
-                  labels: List[str]
-                  runner_id: Optional[int]
-                  runner_name: Optional[str]
-                  runner_group_id: Optional[int]
-                  runner_group_name: Optional[str]
-                  workflow_name: Optional[str]
-                  head_branch: Optional[str]
-                  created_at: str
-
-
-              class Payload(BaseModel):
-                  action: str
-                  workflow_job: WorkflowJob
-
-
-              app = FastAPI()
-
-
-              @app.post("/webhook")
-              async def github_webhook(payload: Payload):
-                  if (
-                      payload.action == "completed"
-                      and payload.workflow_job.runner_name
-                      == "${{ steps.generate-runner-id.outputs.runner-id }}"
-                  ):
-                      if sys.platform.startswith("linux"):
-                          os.system("sudo shutdown -h now")
-                          return {"message": "Shutdown initiated"}
-                      else:
-                          return {"error": "This endpoint only works on Linux systems"}
-                  return {"error": "Invalid payload structure"}
-
-
-              if __name__ == "__main__":
-                  import uvicorn
-
-                  uvicorn.run(app, host="127.0.0.1", port=8000)
-            defer: true
-            owner: runner:users
-            path: /opt/actions-runner/webhook.py
-            permissions: '0700'
-          - content: |
-              Package: nodejs
-              Pin: origin deb.nodesource.com
-              Pin-Priority: 600
-            owner: root:root
-            path: /etc/apt/preferences.d/nodejs
-            permissions: '0644'
-          - content: |
-              Package: nsolid
-              Pin: origin deb.nodesource.com
-              Pin-Priority: 600
-            owner: root:root
-            path: /etc/apt/preferences.d/nsolid
-            permissions: '0644'
-          - content: |
               #!/bin/bash
               cd /opt/actions-runner
               curl -o actions-runner-linux-x64-${{ inputs.gha-runner-version }}.tar.gz -L https://github.com/actions/runner/releases/download/v${{ inputs.gha-runner-version }}/actions-runner-linux-x64-${{ inputs.gha-runner-version }}.tar.gz
               echo "${{ inputs.gha-runner-sha }}  actions-runner-linux-x64-${{ inputs.gha-runner-version }}.tar.gz" | shasum -a 256 -c
               tar xzf actions-runner-linux-x64-${{ inputs.gha-runner-version }}.tar.gz
               /opt/actions-runner/config.sh --url https://github.com/${{ github.repository }} --token ${{ steps.get-token.outputs.reg-token }} --ephemeral --unattended
-              /opt/actions-runner/run.sh &
+              /opt/actions-runner/run.sh
+              sudo poweroff
             defer: true
             owner: runner:users
-            path: /opt/actions-runner/setup.sh
+            path: /opt/actions-runner/start.sh
             permissions: '0700'
         EOF
         cloud-localds seed.img user-data meta-data
