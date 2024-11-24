@@ -59,13 +59,15 @@ runs:
       shell: bash
     - id: get-token
       name: Get self-hosted runner registration token
-      run: >-
-        echo "reg-token=$(curl -L
-        -X POST
-        -H 'Accept: application/vnd.github+json'
-        -H 'Authorization: Bearer ${{ inputs.gh-api-token }}'
-        -H 'X-GitHub-Api-Version: 2022-11-28' https://api.github.com/repos/${{ github.repository }}/actions/runners/registration-token |
-        jq -r .token)" >> "$GITHUB_OUTPUT"
+      run: |
+        reg_token=$(curl -L \
+          -X POST \
+          -H 'Accept: application/vnd.github+json' \
+          -H 'Authorization: Bearer ${{ inputs.gh-api-token }}' \
+          -H 'X-GitHub-Api-Version: 2022-11-28' https://api.github.com/repos/${{ github.repository }}/actions/runners/registration-token \
+          | jq -r .token)
+        echo "::add-mask::$reg_token"
+        echo "reg-token=$reg_token" >> "$GITHUB_OUTPUT"
       shell: bash
     - id: start-tailscale
       name: Start Tailscale
