@@ -42,7 +42,6 @@ jobs:
     steps:
       - name: Tell the time
         run: |
-          set -eu
           echo "Testing runner..."
           date
           echo "Test completed successfully!"
