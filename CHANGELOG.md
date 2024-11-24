@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.1.0...v1.2.0) (2024-11-24)
+
+
+### Features
+
+* **action:** Make VM disk size configurable ([#6](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/6)) ([282cedb](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/282cedb818fbf8a91ec38f52bd5dcbc7cf11d2dd))
+
 ## [1.1.0](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.0.0...v1.1.0) (2024-11-24)
 
 
