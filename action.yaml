@@ -193,9 +193,8 @@ runs:
           - unzip
           - zip
         runcmd:
-          - [ systemd-run, --on-active=5m, "/opt/actions-runner/check-done.sh" ]
           - [ mkdir, -p, /opt/actions-runner ]
-          - [ su, runner, -c, "/opt/actions-runner/setup.sh" ]
+          - [ su, runner, --preserve-environment, -c, "/opt/actions-runner/start.sh" ]
         timezone: "${{ inputs.gha-runner-tz }}"
         users:
           - name: runner
@@ -210,19 +209,11 @@ runs:
               echo "${{ inputs.gha-runner-sha }}  actions-runner-linux-x64-${{ inputs.gha-runner-version }}.tar.gz" | shasum -a 256 -c
               tar xzf actions-runner-linux-x64-${{ inputs.gha-runner-version }}.tar.gz
               /opt/actions-runner/config.sh --url https://github.com/${{ github.repository }} --token ${{ steps.get-token.outputs.reg-token }} --ephemeral --unattended
-              /opt/actions-runner/run.sh &
+              /opt/actions-runner/run.sh
+              sleep 5 && sudo poweroff &
             defer: true
             owner: runner:users
-            path: /opt/actions-runner/setup.sh
-            permissions: '0700'
-          - content: |
-              #!/bin/bash
-              if [ ! -e /opt/actions-runner/.runner ]; then
-                /usr/sbin/poweroff
-              fi
-            defer: true
-            owner: runner:users
-            path: /opt/actions-runner/check-done.sh
+            path: /opt/actions-runner/start.sh
             permissions: '0700'
         EOF
         cloud-localds seed.img user-data meta-data
