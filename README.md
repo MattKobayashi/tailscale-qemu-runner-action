@@ -69,6 +69,10 @@ jobs:
 
 **Required** A GitHub Personal Access Token with `repo` scope, or a fine-grained access token with `administration:write` permission.
 
+### `gha-runner-apt-mirror`
+
+The APT mirror to configure in the self-hosted runner VM. Defaults to `http://archive.ubuntu.com/ubuntu`.
+
 ### `gha-runner-cpus`
 
 The number of CPUs to allocate to the self-hosted runner VM. Defaults to `4`.
@@ -80,6 +84,10 @@ The amount of memory to allocate to the self-hosted runner VM in megabytes. Opti
 ### `gha-runner-sha`
 
 The SHA256 checksum of the self-hosted runner tarball. Defaults to the SHA256 checksum for the tarball version specified in `gha-runner-version`.
+
+### `gha-runner-tz`
+
+The timezone to configure in the self-hosted runner VM. Defaults to `UTC`.
 
 ### `gha-runner-version`
 

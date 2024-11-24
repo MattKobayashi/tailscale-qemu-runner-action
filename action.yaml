@@ -8,6 +8,10 @@ inputs:
   gh-api-token:
     description: "A GitHub Personal Access Token with `repo` scope, or a fine-grained access token with `administration:write` permission."
     required: true
+  gha-runner-apt-mirror:
+    default: "http://archive.ubuntu.com/ubuntu"
+    description: "The APT mirror to configure in the self-hosted runner VM."
+    required: false
   gha-runner-cpus:
     default: "4"
     description: "The number of CPUs to allocate to the self-hosted runner VM."
@@ -19,6 +23,10 @@ inputs:
   gha-runner-sha:
     default: "ba46ba7ce3a4d7236b16fbe44419fb453bc08f866b24f04d549ec89f1722a29e"
     description: "The SHA256 checksum of the self-hosted runner tarball."
+    required: false
+  gha-runner-tz:
+    default: "UTC"
+    description: "The timezone to configure in the self-hosted runner VM."
     required: false
   gha-runner-version:
     default: "2.321.0"
@@ -97,6 +105,9 @@ runs:
         cat > user-data <<EOF
         #cloud-config
         apt:
+          primary:
+            - arches: [default]
+              uri: ${{ inputs.gha-runner-apt-mirror }}
           sources:
             docker:
               source: 'deb [arch=amd64] https://download.docker.com/linux/ubuntu noble stable'
@@ -185,6 +196,7 @@ runs:
           - [ systemd-run, --on-active=5m, "/opt/actions-runner/check-done.sh" ]
           - [ mkdir, -p, /opt/actions-runner ]
           - [ su, runner, -c, "/opt/actions-runner/setup.sh" ]
+        timezone: "${{ gha-runner-tz }}"
         users:
           - name: runner
             groups: docker
