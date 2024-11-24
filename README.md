@@ -24,7 +24,7 @@ jobs:
       - name: Create self-hosted Actions runner
         uses: MattKobayashi/tailscale-qemu-runner-action@v1.0.0
         with:
-          gh-api-token: ${{ secrets.gh-api-token }}
+          gh-api-token: ${{ secrets.GH_API_TOKEN }}
           ssh-host: 192.0.2.1
           ssh-user: matthew
           ts-oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
@@ -50,7 +50,7 @@ jobs:
       - name: Create self-hosted Actions runner
         uses: MattKobayashi/tailscale-qemu-runner-action@v1.0.0
         with:
-          gh-api-token: ${{ secrets.gh-api-token }}
+          gh-api-token: ${{ secrets.GH_API_TOKEN }}
           ssh-host: 192.0.2.1
           ssh-user: matthew
           ts-oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
