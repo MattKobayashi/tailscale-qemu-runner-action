@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.0](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.2.0...v1.3.0) (2024-11-24)
+
+
+### Features
+
+* **action:** Cleanup runner image files ([#10](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/10)) ([648db1f](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/648db1f92974d95dc0bd66b727500aceea1a03ff))
+* **action:** Configurable runner labels ([#9](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/9)) ([3024bbf](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/3024bbf2da06178e9c7368ed859078cdd31dcd33))
+
 ## [1.2.0](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.1.0...v1.2.0) (2024-11-24)
 
 
