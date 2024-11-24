@@ -210,7 +210,7 @@ runs:
               tar xzf actions-runner-linux-x64-${{ inputs.gha-runner-version }}.tar.gz
               /opt/actions-runner/config.sh --url https://github.com/${{ github.repository }} --token ${{ steps.get-token.outputs.reg-token }} --ephemeral --unattended
               /opt/actions-runner/run.sh
-              sudo shutdown -h +1
+              sleep 5 && sudo poweroff &
             defer: true
             owner: runner:users
             path: /opt/actions-runner/start.sh
