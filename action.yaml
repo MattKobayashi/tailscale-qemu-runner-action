@@ -196,7 +196,7 @@ runs:
           - [ systemd-run, --on-active=5m, "/opt/actions-runner/check-done.sh" ]
           - [ mkdir, -p, /opt/actions-runner ]
           - [ su, runner, -c, "/opt/actions-runner/setup.sh" ]
-        timezone: "${{ gha-runner-tz }}"
+        timezone: "${{ inputs.gha-runner-tz }}"
         users:
           - name: runner
             groups: docker
