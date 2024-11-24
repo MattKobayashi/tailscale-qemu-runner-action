@@ -16,6 +16,10 @@ inputs:
     default: "4"
     description: "The number of CPUs to allocate to the self-hosted runner VM."
     required: false
+  gha-runner-disk:
+    default: "16G"
+    description: "The size of the self-hosted runner VM disk."
+    required: false
   gha-runner-mem:
     default: "16G"
     description: "The amount of memory to allocate to the self-hosted runner VM."
@@ -227,6 +231,8 @@ runs:
         ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} \
           wget --progress=dot:mega -O /tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-runner.img \
           https://cloud-images.ubuntu.com/minimal/releases/noble/release/ubuntu-24.04-minimal-cloudimg-amd64.img
+        ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} \
+          qemu-img resize /tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-runner.img ${{ inputs.gha-runner-disk }}
         ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} \
           qemu-system-x86_64 -m ${{ inputs.gha-runner-mem }} \
           -drive file=/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-runner.img,index=0,format=qcow2,media=disk \
