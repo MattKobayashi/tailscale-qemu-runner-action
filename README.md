@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create self-hosted Actions runner
-        uses: MattKobayashi/tailscale-runner-action@v1.0.2
+        uses: MattKobayashi/tailscale-qemu-runner-action@v1.0.0
         with:
           gh-api-token: ${{ secrets.gh-api-token }}
           ssh-host: 192.0.2.1
@@ -47,10 +47,8 @@ jobs:
       matrix:
         runner-name: [test]
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4.2.2
-      - name: Create runner
-        uses: ./
+      - name: Create self-hosted Actions runner
+        uses: MattKobayashi/tailscale-qemu-runner-action@v1.0.0
         with:
           gh-api-token: ${{ secrets.gh-api-token }}
           ssh-host: 192.0.2.1
