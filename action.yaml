@@ -32,9 +32,6 @@ inputs:
     default: "2.321.0"
     description: "The version of self-hosted runner to install."
     required: false
-  smee-url:
-    description: "The URL of the Smee channel to use for GitHub webhook forwarding."
-    required: true
   ssh-host:
     description: "The tailnet hostname or tailnet IP address of the hypervisor for the self-hosted runner VM."
     required: true

@@ -26,7 +26,6 @@ jobs:
           gha-runner-cpus: 2
           gha-runner-mem: 1G
           gha-runner-tz: Australia/Brisbane
-          smee-url: ${{ secrets.SMEE_URL }}
           ssh-host: 100.102.37.118
           ssh-user: matthew
           ts-oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
