@@ -243,3 +243,11 @@ runs:
           -nographic \
           -smp cpus=${{ inputs.gha-runner-cpus }}
       shell: bash
+    - id: cleanup-runner
+      name: Cleanup self-hosted runner VM
+      run: |
+        ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} \
+          rm /tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-runner.img
+        ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} \
+          rm /tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-seed.img
+      shell: bash
