@@ -81,6 +81,10 @@ The number of CPUs to allocate to the self-hosted runner VM. Defaults to `4`.
 
 The size of the self-hosted runner VM disk. Defaults to `16G`.
 
+### `gha-runner-labels`
+
+The labels to apply to the self-hosted runner VM. Defaults to `self-hosted`.
+
 ### `gha-runner-mem`
 
 The amount of memory to allocate to the self-hosted runner VM in megabytes. Optionally, a suffix of “M” or “G” can be used to signify a value in megabytes or gigabytes respectively. Defaults to `16G`.
