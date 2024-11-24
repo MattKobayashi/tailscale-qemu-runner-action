@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - action.yaml
-      - '.github/workflows/**.yaml'
+      - ".github/workflows/**.yaml"
 jobs:
   create-runner:
     name: Create self-hosted runner VM
@@ -27,6 +27,7 @@ jobs:
           gh-api-token: ${{ secrets.GH_API_TOKEN }}
           gha-runner-apt-mirror: http://au.archive.ubuntu.com/ubuntu/
           gha-runner-cpus: 2
+          gha-runner-labels: test-runner
           gha-runner-mem: 1G
           gha-runner-tz: Australia/Brisbane
           ssh-host: 100.102.37.118
@@ -36,7 +37,7 @@ jobs:
           ts-tag: ci
   test-runner:
     name: Test self-hosted runner
-    runs-on: self-hosted
+    runs-on: test-runner
     strategy:
       fail-fast: false
       max-parallel: 1
