@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.1](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.3.0...v1.3.1) (2024-11-25)
+
+
+### Bug Fixes
+
+* **action:** Add -enable-kvm flag ([#12](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/12)) ([268ece4](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/268ece45f21850875cc802458ca1e4ca22d1a6ef))
+
 ## [1.3.0](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.2.0...v1.3.0) (2024-11-24)
 
 
