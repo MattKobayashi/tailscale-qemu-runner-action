@@ -197,6 +197,7 @@ runs:
           - git
           - git-lfs
           - jq
+          - qemu-guest-agent
           - sudo
           - unzip
           - zip
