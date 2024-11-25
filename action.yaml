@@ -113,6 +113,13 @@ runs:
         cat > user-data <<EOF
         #cloud-config
         apt:
+          conf: |
+            APT {
+              Assume-Yes 'true';
+              Fix-Broken 'true';
+              Install-Recommends 'false';
+              Install-Suggests 'false';
+            }
           primary:
             - arches: [default]
               uri: ${{ inputs.gha-runner-apt-mirror }}
