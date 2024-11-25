@@ -241,6 +241,7 @@ runs:
           qemu-system-x86_64 -m ${{ inputs.gha-runner-mem }} \
           -drive file=/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-runner.img,index=0,format=qcow2,media=disk \
           -drive file=/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-seed.img,index=1,media=cdrom \
+          -enable-kvm \
           -machine accel=kvm:tcg \
           -net nic,model=virtio \
           -net user \
