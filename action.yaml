@@ -249,6 +249,7 @@ runs:
           then
             wget --progress=dot:mega -P /tmp/actions-runners \
             https://cloud-images.ubuntu.com/minimal/releases/noble/release/ubuntu-24.04-minimal-cloudimg-amd64.img
+            qemu-img resize /tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-amd64.img ${{ inputs.gha-runner-disk }}
           fi
         ENDSSH
         ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} /bin/bash <<ENDSSH
