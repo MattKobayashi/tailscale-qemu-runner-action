@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.5.0...v1.5.1) (2024-11-25)
+
+
+### Bug Fixes
+
+* **action:** Disk resizing ([#19](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/19)) ([3eac2a2](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/3eac2a2de56a8112e2fce35170f32eecab416cf8))
+
 ## [1.5.0](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.4.0...v1.5.0) (2024-11-25)
 
 
