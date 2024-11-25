@@ -240,6 +240,7 @@ runs:
           qemu-img resize /tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-runner.img ${{ inputs.gha-runner-disk }}
         ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} \
           qemu-system-x86_64 -m ${{ inputs.gha-runner-mem }} \
+          -cpu host \
           -drive file=/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-runner.img,index=0,format=qcow2,media=disk \
           -drive file=/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-seed.img,index=1,media=cdrom \
           -enable-kvm \
