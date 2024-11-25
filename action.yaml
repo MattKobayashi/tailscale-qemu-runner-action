@@ -113,6 +113,13 @@ runs:
         cat > user-data <<EOF
         #cloud-config
         apt:
+          conf: |
+            APT {
+              Assume-Yes 'true';
+              Fix-Broken 'true';
+              Install-Recommends 'false';
+              Install-Suggests 'false';
+            }
           primary:
             - arches: [default]
               uri: ${{ inputs.gha-runner-apt-mirror }}
@@ -199,11 +206,9 @@ runs:
           - jq
           - qemu-guest-agent
           - sudo
-          - unzip
-          - zip
         runcmd:
           - [ mkdir, -p, /opt/actions-runner ]
-          - [ su, runner, --preserve-environment, -c, "/opt/actions-runner/start.sh" ]
+          - [ sudo, -u, runner, -s, /opt/actions-runner/start.sh ]
         timezone: "${{ inputs.gha-runner-tz }}"
         users:
           - name: runner
@@ -217,6 +222,7 @@ runs:
               curl -o actions-runner-linux-x64-${{ inputs.gha-runner-version }}.tar.gz -L https://github.com/actions/runner/releases/download/v${{ inputs.gha-runner-version }}/actions-runner-linux-x64-${{ inputs.gha-runner-version }}.tar.gz
               echo "${{ inputs.gha-runner-sha }}  actions-runner-linux-x64-${{ inputs.gha-runner-version }}.tar.gz" | shasum -a 256 -c
               tar xzf actions-runner-linux-x64-${{ inputs.gha-runner-version }}.tar.gz
+              sudo /opt/actions-runner/bin/installdependencies.sh
               /opt/actions-runner/config.sh --ephemeral --labels ${{ inputs.gha-runner-labels }} --token ${{ steps.get-token.outputs.reg-token }} --unattended --url https://github.com/${{ github.repository }}
               /opt/actions-runner/run.sh
               sleep 5 && sudo poweroff &
