@@ -103,7 +103,7 @@ runs:
       name: Install cloud-utils
       run: sudo apt-get update && sudo apt-get --yes install cloud-utils
       shell: bash
-    - id: seed-img
+    - id: create-seed
       name: Create seed.img
       run: |
         cat > meta-data <<EOF
@@ -233,34 +233,40 @@ runs:
         EOF
         cloud-localds seed.img user-data meta-data
       shell: bash
+    - id: copy-seed
+      name: Copy seed.img to hypervisor
+      run: |
+        ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} /bin/bash <<ENDSSH
+          mkdir -p /tmp/actions-runners
+        ENDSSH
+        scp seed.img ${{ inputs.ssh-user }}@${{ inputs.ssh-host }}:/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-seed.img
+      shell: bash
     - id: start-runner
       name: Start self-hosted runner VM
       run: |
-        ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} \
-          mkdir -p /tmp/actions-runners
-        scp seed.img ${{ inputs.ssh-user }}@${{ inputs.ssh-host }}:/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-seed.img
-        ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} \
-          wget --progress=dot:mega -O /tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-runner.img \
-          https://cloud-images.ubuntu.com/minimal/releases/noble/release/ubuntu-24.04-minimal-cloudimg-amd64.img
-        ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} \
-          qemu-img resize /tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-runner.img ${{ inputs.gha-runner-disk }}
-        ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} \
+        ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} /bin/bash <<ENDSSH
+          if test ! -s /tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-amd64.img
+          then
+            wget --progress=dot:mega -P /tmp/actions-runners \
+            https://cloud-images.ubuntu.com/minimal/releases/noble/release/ubuntu-24.04-minimal-cloudimg-amd64.img
+          fi
+        ENDSSH
+        ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} /bin/bash <<ENDSSH
           qemu-system-x86_64 -m ${{ inputs.gha-runner-mem }} \
           -cpu host \
-          -drive file=/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-runner.img,index=0,format=qcow2,media=disk \
+          -drive file=/tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-amd64.img,index=0,format=qcow2,media=disk,snapshot=on \
           -drive file=/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-seed.img,index=1,media=cdrom \
-          -enable-kvm \
           -machine accel=kvm:tcg \
           -net nic,model=virtio \
           -net user \
           -nographic \
           -smp cpus=${{ inputs.gha-runner-cpus }}
+        ENDSSH
       shell: bash
-    - id: cleanup-runner
-      name: Cleanup self-hosted runner VM
+    - id: remove-seed
+      name: Remove seed.img from hypervisor
       run: |
-        ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} \
-          rm /tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-runner.img
-        ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} \
+        ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} /bin/bash <<ENDSSH
           rm /tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-seed.img
+        ENDSSH
       shell: bash
