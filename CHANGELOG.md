@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.0](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.4.0...v1.5.0) (2024-11-25)
+
+
+### Features
+
+* **action:** Improve runner startup ([#16](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/16)) ([56db248](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/56db248a0765df1868b7a3a3fdc0b46a4b10a8e4))
+* **action:** Use QEMU snapshot mode ([#17](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/17)) ([2cce1a3](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/2cce1a3dc12bab6208a8795c44fc01a8bdd8ab51))
+
 ## [1.4.0](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.3.1...v1.4.0) (2024-11-25)
 
 
