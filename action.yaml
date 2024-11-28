@@ -208,6 +208,8 @@ runs:
           - sudo
         runcmd:
           - [ mkdir, -p, /opt/actions-runner ]
+          - [ mkdir, -p, /opt/hostedtoolcache ]
+          - [ chown, -R, runner:users, /opt/hostedtoolcache ]
           - [ sudo, -u, runner, -s, /opt/actions-runner/start.sh ]
         timezone: "${{ inputs.gha-runner-tz }}"
         users:
