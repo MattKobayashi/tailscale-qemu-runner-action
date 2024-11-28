@@ -25,7 +25,7 @@ jobs:
         uses: ./
         with:
           gh-api-token: ${{ secrets.GH_API_TOKEN }}
-          gha-runner-apt-mirror: http://mirror.overthewire.com.au/ubuntu/
+          gha-runner-apt-mirror: http://au.archive.ubuntu.com/ubuntu/
           gha-runner-cpus: 2
           gha-runner-labels: test-runner
           gha-runner-mem: 1G
