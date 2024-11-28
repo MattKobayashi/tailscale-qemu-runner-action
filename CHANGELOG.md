@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.2](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.5.1...v1.5.2) (2024-11-28)
+
+
+### Bug Fixes
+
+* **action:** Create /opt/hostedtoolcache ([#22](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/22)) ([ffac755](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/ffac755351720630d177f0ef875278862abe71ba))
+
 ## [1.5.1](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.5.0...v1.5.1) (2024-11-25)
 
 
