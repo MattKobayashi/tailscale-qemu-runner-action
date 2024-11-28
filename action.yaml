@@ -195,6 +195,7 @@ runs:
           - docker
           - users
         packages:
+          - build-essential
           - ca-certificates
           - containerd.io
           - curl
