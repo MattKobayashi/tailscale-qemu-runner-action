@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.3](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.5.2...v1.5.3) (2024-11-29)
+
+
+### Bug Fixes
+
+* **action:** Install build-essential ([#24](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/24)) ([486baae](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/486baae16410f6aec048de3e7af50064eecb58c3))
+
 ## [1.5.2](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.5.1...v1.5.2) (2024-11-28)
 
 
