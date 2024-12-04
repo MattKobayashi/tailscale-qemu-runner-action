@@ -255,7 +255,7 @@ runs:
             qemu-img resize /tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-amd64.img ${{ inputs.gha-runner-disk }}
           fi
         ENDSSH
-        ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} /bin/bash <<ENDSSH
+        ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} /bin/bash <<ENDSSH &
           qemu-system-x86_64 -m ${{ inputs.gha-runner-mem }} \
           -cpu host \
           -drive file=/tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-amd64.img,index=0,format=qcow2,media=disk,snapshot=on \
@@ -265,12 +265,5 @@ runs:
           -net user \
           -nographic \
           -smp cpus=${{ inputs.gha-runner-cpus }}
-        ENDSSH
-      shell: bash
-    - id: remove-seed
-      name: Remove seed.img from hypervisor
-      run: |
-        ssh ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} /bin/bash <<ENDSSH
-          rm /tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-seed.img
         ENDSSH
       shell: bash
