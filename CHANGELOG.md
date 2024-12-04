@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.4](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.5.3...v1.5.4) (2024-12-04)
+
+
+### Bug Fixes
+
+* **action:** Fork QEMU to background ([#26](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/26)) ([c28772e](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/c28772e0cc38df4bc42f671280906fad4d03b8db))
+
 ## [1.5.3](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.5.2...v1.5.3) (2024-11-29)
 
 
