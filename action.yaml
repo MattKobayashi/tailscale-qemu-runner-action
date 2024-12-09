@@ -196,6 +196,7 @@ runs:
           - docker-buildx-plugin
           - docker-ce
           - docker-ce-cli
+          - docker-compose-plugin
           - git
           - git-lfs
           - jq
