@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.5.6...v1.6.0) (2024-12-09)
+
+
+### Features
+
+* **action:** Install `docker-compose-plugin` ([#33](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/33)) ([54f64e9](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/54f64e927c116003abf02fecf44f17deecf1a232))
+
 ## [1.5.6](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.5.5...v1.5.6) (2024-12-09)
 
 
