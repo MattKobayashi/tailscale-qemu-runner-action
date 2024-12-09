@@ -95,7 +95,7 @@ runs:
         version: ${{ inputs.ts-version }}
     - id: install-cloud-utils
       name: Install cloud-utils
-      run: sudo apt-get update && sudo apt-get --yes install cloud-utils
+      run: sudo apt-get update && sudo apt-get --no-install-recommends --yes install cloud-utils
       shell: bash
     - id: create-seed
       name: Create seed.img
