@@ -93,15 +93,9 @@ runs:
         oauth-secret: ${{ inputs.ts-oauth-secret }}
         tags: tag:${{ inputs.ts-tag }}
         version: ${{ inputs.ts-version }}
-    - id: ssh-keyscan
-      name: Run ssh-keyscan
-      run: |
-        mkdir -p ~/.ssh
-        ssh-keyscan -T 60 ${{ inputs.ssh-host }} >> ~/.ssh/known_hosts
-      shell: bash
     - id: install-cloud-utils
       name: Install cloud-utils
-      run: sudo apt-get update && sudo apt-get --yes install cloud-utils
+      run: sudo apt-get update && sudo apt-get --no-install-recommends --yes install cloud-utils
       shell: bash
     - id: create-seed
       name: Create seed.img
@@ -235,6 +229,12 @@ runs:
             permissions: '0700'
         EOF
         cloud-localds seed.img user-data meta-data
+      shell: bash
+    - id: ssh-keyscan
+      name: Run ssh-keyscan
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan -T 60 ${{ inputs.ssh-host }} >> ~/.ssh/known_hosts
       shell: bash
     - id: copy-seed
       name: Copy seed.img to hypervisor
