@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.6](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.5.5...v1.5.6) (2024-12-09)
+
+
+### Bug Fixes
+
+* **action:** Clear local APT lists ([#31](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/31)) ([3f63150](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/3f631505e8b13786cb4f73d6f1accedcd6c129f7))
+
 ## [1.5.5](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.5.4...v1.5.5) (2024-12-09)
 
 
