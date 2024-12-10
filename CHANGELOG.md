@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.6.2...v1.7.0) (2024-12-10)
+
+
+### Features
+
+* **action:** Add debug mode ([#39](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/39)) ([ed994c5](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/ed994c58d8c66f06e422e3f70bc13edb936accf5))
+
 ## [1.6.2](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.6.1...v1.6.2) (2024-12-10)
 
 
