@@ -188,6 +188,7 @@ runs:
         groups:
           - docker
           - users
+        package_update: true
         packages:
           - build-essential
           - ca-certificates
@@ -203,7 +204,6 @@ runs:
           - qemu-guest-agent
           - sudo
         runcmd:
-          - [ rm, -rf, /var/lib/apt/lists/* ]
           - [ mkdir, -p, /opt/actions-runner ]
           - [ mkdir, -p, /opt/hostedtoolcache ]
           - [ chown, -R, runner:users, /opt/hostedtoolcache ]
