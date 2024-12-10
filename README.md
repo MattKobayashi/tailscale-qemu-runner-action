@@ -127,4 +127,4 @@ A unique tag to apply to ephemeral Tailscale nodes. Defaults to `github-actions`
 
 ### `ts-version`
 
-The Tailscale client version to use. Defaults to `1.76.6`.
+The Tailscale client version to use. Defaults to `1.78.1`.
