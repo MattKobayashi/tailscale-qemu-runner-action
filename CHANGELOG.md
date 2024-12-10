@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.2](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.6.1...v1.6.2) (2024-12-10)
+
+
+### Bug Fixes
+
+* **action:** Set `package_update` to true ([#37](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/37)) ([d6307e8](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/d6307e891646da911559d49ea5a9d3f2078df92a))
+
 ## [1.6.1](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.6.0...v1.6.1) (2024-12-10)
 
 
