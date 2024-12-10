@@ -16,6 +16,10 @@ inputs:
     default: "4"
     description: "The number of CPUs to allocate to the self-hosted runner VM."
     required: false
+  gha-runner-debug:
+    default: "disabled"
+    description: "Configures debug mode on the self-hosted runner VM."
+    required: false
   gha-runner-disk:
     default: "16G"
     description: "The size of the self-hosted runner VM disk."
@@ -240,8 +244,8 @@ runs:
         ENDSSH
         scp -o StrictHostKeyChecking=no seed.img ${{ inputs.ssh-user }}@${{ inputs.ssh-host }}:/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-seed.img
       shell: bash
-    - id: start-runner
-      name: Start self-hosted runner VM
+    - id: get-vm-image
+      name: Get Ubuntu minimal cloud image (if not present)
       run: |
         ssh -o StrictHostKeyChecking=no ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} /bin/bash <<ENDSSH
           if test ! -s /tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-amd64.img
@@ -251,7 +255,28 @@ runs:
             qemu-img resize /tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-amd64.img ${{ inputs.gha-runner-disk }}
           fi
         ENDSSH
+      shell: bash
+    - id: start-runner
+      if: ${{ inputs.gha-runner-debug != 'enabled' }}
+      name: Start self-hosted runner VM
+      run: |
         ssh -o StrictHostKeyChecking=no ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} /bin/bash <<ENDSSH &
+          qemu-system-x86_64 -m ${{ inputs.gha-runner-mem }} \
+          -cpu host \
+          -drive file=/tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-amd64.img,index=0,format=qcow2,media=disk,snapshot=on \
+          -drive file=/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-seed.img,index=1,media=cdrom \
+          -machine accel=kvm:tcg \
+          -net nic,model=virtio \
+          -net user \
+          -nographic \
+          -smp cpus=${{ inputs.gha-runner-cpus }}
+        ENDSSH
+      shell: bash
+    - id: start-runner-debug
+      if: ${{ inputs.gha-runner-debug == 'enabled' }}
+      name: Start self-hosted runner VM (debug mode)
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} /bin/bash <<ENDSSH
           qemu-system-x86_64 -m ${{ inputs.gha-runner-mem }} \
           -cpu host \
           -drive file=/tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-amd64.img,index=0,format=qcow2,media=disk,snapshot=on \
