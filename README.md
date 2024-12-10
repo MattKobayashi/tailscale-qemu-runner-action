@@ -77,6 +77,10 @@ The APT mirror to configure in the self-hosted runner VM. Defaults to `http://ar
 
 The number of CPUs to allocate to the self-hosted runner VM. Defaults to `4`.
 
+### `gha-runner-debug`
+
+Configures debug mode on the self-hosted runner VM. Debug mode holds the CLI connection open instead of detaching the QEMU process and stopping the hosted runner. Defaults to `disabled`.
+
 ### `gha-runner-disk`
 
 The size of the self-hosted runner VM disk. Defaults to `16G`.
@@ -127,4 +131,4 @@ A unique tag to apply to ephemeral Tailscale nodes. Defaults to `github-actions`
 
 ### `ts-version`
 
-The Tailscale client version to use. Defaults to `1.76.6`.
+The Tailscale client version to use. Defaults to `1.78.1`.
