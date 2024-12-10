@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.6.0...v1.6.1) (2024-12-10)
+
+
+### Bug Fixes
+
+* **action:** Remove ssh-keyscan ([#35](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/35)) ([d3c714d](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/d3c714d90f740a22db5db6054ffa247fb1690cbc))
+
 ## [1.6.0](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.5.6...v1.6.0) (2024-12-09)
 
 
