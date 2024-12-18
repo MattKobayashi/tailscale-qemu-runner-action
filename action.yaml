@@ -65,7 +65,7 @@ inputs:
     description: "A unique tag to apply to ephemeral Tailscale nodes."
     required: false
   ts-version:
-    default: "1.78.1"
+    default: "latest"
     description: "The Tailscale client version to use."
     required: false
 runs:
