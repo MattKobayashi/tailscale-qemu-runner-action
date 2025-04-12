@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.7.0...v1.7.1) (2025-04-12)
+
+
+### Bug Fixes
+
+* update gha runner version to 2.323.0 and sha ([#51](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/51)) ([95731e9](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/95731e98b30c192741ed2a016fe74043d573d3a0))
+
 ## [1.7.0](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.6.2...v1.7.0) (2024-12-10)
 
 
