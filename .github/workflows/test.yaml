@@ -1,21 +1,8 @@
 ---
-name: Test `tailscale-qemu-runner-action`
-on:
-  pull_request:
-    branches:
-      - main
-    paths:
-      - action.yaml
-      - ".github/workflows/**.yaml"
 jobs:
-  create-runner:
-    name: Create self-hosted runner VM
+  setup:
+    name: Setup
     runs-on: ubuntu-24.04
-    strategy:
-      fail-fast: false
-      max-parallel: 1
-      matrix:
-        runner-name: [test]
     steps:
       - name: Checkout repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -28,7 +15,7 @@ jobs:
           gha-runner-apt-mirror: http://mirror.overthewire.com.au/ubuntu/
           gha-runner-cpus: 2
           gha-runner-debug: enabled
-          gha-runner-labels: test-runner
+          gha-runner-labels: runner
           gha-runner-mem: 1G
           gha-runner-tz: Australia/Brisbane
           ssh-host: 100.102.37.118
@@ -36,17 +23,22 @@ jobs:
           ts-oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           ts-oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           ts-tag: ci
-  test-runner:
-    name: Test self-hosted runner
-    runs-on: test-runner
-    strategy:
-      fail-fast: false
-      max-parallel: 1
-      matrix:
-        runner-name: [test]
+  runner:
+    name: Runner
+    runs-on: runner
     steps:
       - name: Tell the time
         run: |
           echo "Testing runner..."
           date
           echo "Test completed successfully!"
+permissions:
+  contents: read
+name: Test
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - action.yaml
+      - ".github/workflows/**.yaml"
