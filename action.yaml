@@ -252,8 +252,9 @@ runs:
           then
             wget --progress=dot:mega -P /tmp/actions-runners \
             https://cloud-images.ubuntu.com/minimal/releases/noble/release/ubuntu-24.04-minimal-cloudimg-amd64.img
-            qemu-img resize /tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-amd64.img ${{ inputs.gha-runner-disk }}
           fi
+          cp /tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-amd64.img /tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-boot.img
+          qemu-img resize /tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-boot.img ${{ inputs.gha-runner-disk }}
         ENDSSH
       shell: bash
     - id: start-runner
@@ -263,7 +264,7 @@ runs:
         ssh -o StrictHostKeyChecking=no ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} /bin/bash <<ENDSSH &
           qemu-system-x86_64 -m ${{ inputs.gha-runner-mem }} \
           -cpu host \
-          -drive file=/tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-amd64.img,index=0,format=qcow2,media=disk,snapshot=on \
+          -drive file=/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-boot.img,index=0,format=qcow2,media=disk,snapshot=on \
           -drive file=/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-seed.img,index=1,media=cdrom \
           -machine accel=kvm:tcg \
           -net nic,model=virtio \
@@ -279,7 +280,7 @@ runs:
         ssh -o StrictHostKeyChecking=no ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} /bin/bash <<ENDSSH
           qemu-system-x86_64 -m ${{ inputs.gha-runner-mem }} \
           -cpu host \
-          -drive file=/tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-amd64.img,index=0,format=qcow2,media=disk,snapshot=on \
+          -drive file=/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-boot.img,index=0,format=qcow2,media=disk,snapshot=on \
           -drive file=/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-seed.img,index=1,media=cdrom \
           -machine accel=kvm:tcg \
           -net nic,model=virtio \
