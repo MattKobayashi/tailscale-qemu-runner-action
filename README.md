@@ -48,7 +48,7 @@ jobs:
         runner-name: [test]
     steps:
       - name: Create self-hosted Actions runner
-        uses: MattKobayashi/tailscale-qemu-runner-action@v1.1.0
+        uses: MattKobayashi/tailscale-qemu-runner-action@v1.7.1
         with:
           gh-api-token: ${{ secrets.GH_API_TOKEN }}
           ssh-host: 192.0.2.1
