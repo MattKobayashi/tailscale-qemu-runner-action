@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.2](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.7.1...v1.7.2) (2025-06-03)
+
+
+### Bug Fixes
+
+* copy base Ubuntu boot image to UUID-named image file ([#58](https://github.com/MattKobayashi/tailscale-qemu-runner-action/issues/58)) ([d3d7392](https://github.com/MattKobayashi/tailscale-qemu-runner-action/commit/d3d7392ec4bb285204951eb6cff84872491abcef))
+
 ## [1.7.1](https://github.com/MattKobayashi/tailscale-qemu-runner-action/compare/v1.7.0...v1.7.1) (2025-04-12)
 
 
