@@ -41,7 +41,7 @@ inputs:
     description: "The timezone to configure in the self-hosted runner VM."
     required: false
   gha-runner-version:
-    default: "2.326.0"
+    default: "2.327.0"
     description: "The version of self-hosted runner to install."
     required: false
   ssh-host:
