@@ -33,7 +33,7 @@ inputs:
     description: "The amount of memory to allocate to the self-hosted runner VM."
     required: false
   gha-runner-sha:
-    default: "0dbc9bf5a58620fc52cb6cc0448abcca964a8d74b5f39773b7afcad9ab691e19"
+    default: "194f1e1e4bd02f80b7e9633fc546084d8d4e19f3928a324d512ea53430102e1d"
     description: "The SHA256 checksum of the self-hosted runner tarball."
     required: false
   gha-runner-tz:
@@ -41,7 +41,7 @@ inputs:
     description: "The timezone to configure in the self-hosted runner VM."
     required: false
   gha-runner-version:
-    default: "2.328.0"
+    default: "2.329.0"
     description: "The version of self-hosted runner to install."
     required: false
   ssh-host:
