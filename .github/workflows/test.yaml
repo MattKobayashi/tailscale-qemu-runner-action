@@ -1,6 +1,8 @@
 ---
 jobs:
   setup:
+    env:
+      TS_HOST: 100.102.37.118
     name: Setup
     runs-on: ubuntu-24.04
     steps:
@@ -18,10 +20,11 @@ jobs:
           gha-runner-labels: runner
           gha-runner-mem: 1G
           gha-runner-tz: Australia/Brisbane
-          ssh-host: 100.102.37.118
+          ssh-host: ${{ env.TS_HOST }}
           ssh-user: matthew
           ts-oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
           ts-oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          ts-ping: ${{ env.TS_HOST }}
           ts-tag: ci
   runner:
     name: Runner

@@ -125,6 +125,10 @@ The timeout value for `ssh-keyscan` in seconds. Defaults to `60`.
 
 **Required** Your Tailscale OAuth Client Secret.
 
+### `ts-ping`
+
+A list of tailnet nodes to ping for connectivity checks.
+
 ### `ts-tag`
 
 A unique tag to apply to ephemeral Tailscale nodes. Defaults to `github-actions`.

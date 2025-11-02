@@ -60,6 +60,10 @@ inputs:
   ts-oauth-secret:
     description: "Your Tailscale OAuth Client Secret."
     required: true
+  ts-ping:
+    default: ""
+    description: "A list of tailnet nodes to ping for connectivity checks."
+    required: false
   ts-tag:
     default: "github-actions"
     description: "A unique tag to apply to ephemeral Tailscale nodes."
@@ -78,6 +82,7 @@ runs:
         oauth-client-id: ${{ inputs.ts-oauth-client-id }}
         oauth-secret: ${{ inputs.ts-oauth-secret }}
         tags: tag:${{ inputs.ts-tag }}
+        ping: ${{ inputs.ts-ping }}
         version: ${{ inputs.ts-version }}
     - id: install-cloud-utils
       name: Install cloud-utils
