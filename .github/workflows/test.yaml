@@ -6,11 +6,12 @@ jobs:
     name: Setup
     runs-on: ubuntu-24.04
     steps:
+      # Harden the runner (Audit all outbound calls)
+      # https://github.com/step-security/harden-runner
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
         with:
           egress-policy: audit
-
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -35,18 +36,17 @@ jobs:
     name: Runner
     runs-on: runner
     steps:
+      # Harden the runner (Audit all outbound calls)
+      # https://github.com/step-security/harden-runner
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
         with:
           egress-policy: audit
-
       - name: Tell the time
         run: |
           echo "Testing runner..."
           date
           echo "Test completed successfully!"
-permissions:
-  contents: read
 name: Test
 on:
   pull_request:
@@ -55,3 +55,5 @@ on:
     paths:
       - action.yaml
       - ".github/workflows/**.yaml"
+permissions:
+  contents: read
