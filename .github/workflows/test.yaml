@@ -52,8 +52,5 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - action.yaml
-      - ".github/workflows/**.yaml"
 permissions:
   contents: read
