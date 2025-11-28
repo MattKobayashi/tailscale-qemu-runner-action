@@ -23,7 +23,7 @@ jobs:
           gha-runner-apt-mirror: https://au.archive.ubuntu.com/ubuntu/
           gha-runner-cpus: 2
           gha-runner-debug: enabled
-          gha-runner-labels: runner
+          gha-runner-labels: runner-${{ github.event.number }}
           gha-runner-mem: 1G
           gha-runner-tz: Australia/Brisbane
           ssh-host: ${{ env.TS_HOST }}
@@ -34,7 +34,7 @@ jobs:
           ts-tag: ci
   runner:
     name: Runner
-    runs-on: runner
+    runs-on: runner-${{ github.event.number }}
     steps:
       # Harden the runner (Audit all outbound calls)
       # https://github.com/step-security/harden-runner
