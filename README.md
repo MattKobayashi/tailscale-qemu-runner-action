@@ -117,6 +117,10 @@ The timeout value for `ssh-keyscan` in seconds. Defaults to `60`.
 
 **Required** The SSH username to use when logging into your QEMU host.
 
+### `ts-dns`
+
+Should Tailscale accept DNS configuration from the control plane? Defaults to `false`.
+
 ### `ts-oauth-client-id`
 
 **Required** Your Tailscale OAuth Client ID.
