@@ -54,6 +54,10 @@ inputs:
   ssh-user:
     description: "The SSH username to use when logging into your Docker host."
     required: true
+  ts-dns:
+    default: "false"
+    description: "Should Tailscale accept DNS configuration from the control plane?"
+    required: false
   ts-oauth-client-id:
     description: "Your Tailscale OAuth Client ID."
     required: true
@@ -79,6 +83,7 @@ runs:
       name: Start Tailscale
       uses: tailscale/github-action@a392da0a182bba0e9613b6243ebd69529b1878aa # v4.1.0
       with:
+        args: "--accept-dns=${{ inputs.ts-dns }}"
         oauth-client-id: ${{ inputs.ts-oauth-client-id }}
         oauth-secret: ${{ inputs.ts-oauth-secret }}
         tags: tag:${{ inputs.ts-tag }}
