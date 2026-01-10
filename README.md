@@ -95,7 +95,7 @@ The amount of memory to allocate to the self-hosted runner VM in megabytes. Opti
 
 ### `gha-runner-sha`
 
-The SHA256 checksum of the self-hosted runner tarball. Defaults to the SHA256 checksum for the tarball version specified in `gha-runner-version`.
+The SHA256 checksum of the Actions runner tarball. If not provided, the latest version's SHA will be retrieved.
 
 ### `gha-runner-tz`
 
@@ -103,7 +103,7 @@ The timezone to configure in the self-hosted runner VM. Defaults to `UTC`.
 
 ### `gha-runner-version`
 
-The version of self-hosted runner to install. Defaults to `2.321.0`.
+The version of Actions runner to install. If not provided, the latest version will be retrieved.
 
 ### `ssh-keyscan-timeout`
 

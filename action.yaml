@@ -33,16 +33,16 @@ inputs:
     description: "The amount of memory to allocate to the self-hosted runner VM."
     required: false
   gha-runner-sha:
-    default: "5fcc01bd546ba5c3f1291c2803658ebd3cedb3836489eda3be357d41bfcf28a7"
-    description: "The SHA256 checksum of the self-hosted runner tarball."
+    default: ""
+    description: "The SHA256 checksum of the self-hosted runner tarball. If not provided, the latest version's SHA will be retrieved."
     required: false
   gha-runner-tz:
     default: "UTC"
     description: "The timezone to configure in the self-hosted runner VM."
     required: false
   gha-runner-version:
-    default: "2.331.0"
-    description: "The version of self-hosted runner to install."
+    default: ""
+    description: "The version of self-hosted runner to install. If not provided, the latest version will be retrieved."
     required: false
   ssh-host:
     description: "The tailnet hostname or tailnet IP address of the hypervisor for the self-hosted runner VM."
@@ -98,6 +98,33 @@ runs:
       run: |
         set -ex
         echo "runner-id=$(uuidgen)" >> "$GITHUB_OUTPUT"
+      shell: bash
+    - id: get-runner-version
+      name: Get self-hosted runner version
+      run: |
+        set -ex
+        if [ -n "${{ inputs.gha-runner-version }}" ]; then
+          version="${{ inputs.gha-runner-version }}"
+        else
+          latest_release=$(curl -s https://api.github.com/repos/actions/runner/releases/latest)
+          version=$(echo "$latest_release" | jq -r .tag_name | sed 's/^v//')
+        fi
+
+        if [ -n "${{ inputs.gha-runner-sha }}" ]; then
+          sha="${{ inputs.gha-runner-sha }}"
+        else
+          if [ -z "$latest_release" ]; then
+            latest_release=$(curl -s https://api.github.com/repos/actions/runner/releases/latest)
+          fi
+          if [ "$version" = "$(echo "$latest_release" | jq -r .tag_name | sed 's/^v//')" ]; then
+            sha=$(echo "$latest_release" | jq -r .body | sed -n 's/.*<!-- BEGIN SHA linux-x64 -->\(.*\)<!-- END SHA linux-x64 -->.*/\1/p')
+          else
+            release_info=$(curl -s https://api.github.com/repos/actions/runner/releases/tags/v$version)
+            sha=$(echo "$release_info" | jq -r .body | sed -n 's/.*<!-- BEGIN SHA linux-x64 -->\(.*\)<!-- END SHA linux-x64 -->.*/\1/p')
+          fi
+        fi
+        echo "version=$version" >> "$GITHUB_OUTPUT"
+        echo "sha=$sha" >> "$GITHUB_OUTPUT"
       shell: bash
     - id: get-token
       name: Get self-hosted runner registration token
@@ -232,9 +259,9 @@ runs:
           - content: |
               #!/bin/bash
               cd /opt/actions-runner
-              curl -o actions-runner-linux-x64-${{ inputs.gha-runner-version }}.tar.gz -L https://github.com/actions/runner/releases/download/v${{ inputs.gha-runner-version }}/actions-runner-linux-x64-${{ inputs.gha-runner-version }}.tar.gz
-              echo "${{ inputs.gha-runner-sha }}  actions-runner-linux-x64-${{ inputs.gha-runner-version }}.tar.gz" | shasum -a 256 -c
-              tar xzf actions-runner-linux-x64-${{ inputs.gha-runner-version }}.tar.gz
+              curl -o actions-runner-linux-x64-${{ steps.get-runner-version.outputs.version }}.tar.gz -L https://github.com/actions/runner/releases/download/v${{ steps.get-runner-version.outputs.version }}/actions-runner-linux-x64-${{ steps.get-runner-version.outputs.version }}.tar.gz
+              echo "${{ steps.get-runner-version.outputs.sha }}  actions-runner-linux-x64-${{ steps.get-runner-version.outputs.version }}.tar.gz" | shasum -a 256 -c
+              tar xzf actions-runner-linux-x64-${{ steps.get-runner-version.outputs.version }}.tar.gz
               sudo /opt/actions-runner/bin/installdependencies.sh
               /opt/actions-runner/config.sh --ephemeral --labels ${{ inputs.gha-runner-labels }} --token ${{ steps.get-token.outputs.reg-token }} --unattended --url https://github.com/${{ github.repository }}
               /opt/actions-runner/run.sh
