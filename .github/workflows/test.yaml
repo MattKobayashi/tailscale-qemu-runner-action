@@ -3,8 +3,11 @@ jobs:
   setup:
     env:
       TS_HOST: 100.102.37.118
-    name: Setup
+    name: Setup (${{ matrix.arch }})
     runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        arch: [x64, arm64]
     steps:
       - name: Checkout repository
         uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
@@ -15,9 +18,10 @@ jobs:
         with:
           gh-api-token: ${{ secrets.GH_API_TOKEN }}
           gha-runner-apt-mirror: https://au.archive.ubuntu.com/ubuntu/
+          gha-runner-arch: ${{ matrix.arch }}
           gha-runner-cpus: 2
           gha-runner-debug: enabled
-          gha-runner-labels: runner-${{ github.event.number }}
+          gha-runner-labels: runner-${{ github.event.number }}-${{ matrix.arch }}
           gha-runner-mem: 1G
           gha-runner-tz: Australia/Brisbane
           ssh-host: ${{ env.TS_HOST }}
@@ -27,8 +31,12 @@ jobs:
           ts-ping: ${{ env.TS_HOST }}
           ts-tag: ci
   runner:
-    name: Runner
-    runs-on: runner-${{ github.event.number }}
+    name: Runner (${{ matrix.arch }})
+    needs: setup
+    runs-on: runner-${{ github.event.number }}-${{ matrix.arch }}
+    strategy:
+      matrix:
+        arch: [x64, arm64]
     steps:
       - name: Tell the time
         run: |
