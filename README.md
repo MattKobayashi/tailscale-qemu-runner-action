@@ -6,7 +6,7 @@ A GitHub Action to start an ephemeral QEMU-based runner VM via Tailscale.
 
 You'll need the following things:
 
-- A [Tailscale](https://tailscale.com/kb/1151/what-is-tailscale) tailnet with one or more machines with QEMU installed.
+- A [Tailscale](https://tailscale.com/kb/1151/what-is-tailscale) tailnet with one or more machines with at least one of `qemu-system-x86_64` or `qemu-system-aarch64` installed, depending on the runner CPU architectures you need. Note that an ARM64 runner on an x86-64 host (or vice versa) will be slow, as the host will need to emulate the target CPU architecture.
 - A [OAuth client](https://tailscale.com/kb/1215/oauth-clients#setting-up-an-oauth-client) configured on the tailnet.
 - [Tailscale SSH](https://tailscale.com/kb/1193/tailscale-ssh) needs to be enabled on the tailnet, with [appropriate `accept` ACLs](https://tailscale.com/kb/1193/tailscale-ssh#action) configured. `accept` must be used for SSH ACLs, `check` is **not** supported. Tailscale ephemeral nodes are automatically tagged with the value from `ts-tag`, this tag can be used with ACLs.
 - A GitHub [Personal Access Token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#about-personal-access-tokens) with appropriate permissions to [request a runner registration token](https://docs.github.com/en/rest/actions/self-hosted-runners?apiVersion=2022-11-28#create-a-registration-token-for-a-repository) via the GitHub REST API.
@@ -72,6 +72,10 @@ jobs:
 ### `gha-runner-apt-mirror`
 
 The APT mirror to configure in the self-hosted runner VM. Defaults to `http://archive.ubuntu.com/ubuntu`.
+
+### `gha-runner-arch`
+
+The CPU architecture of the self-hosted runner VM. Valid values are `x64` and `arm64`. Defaults to `x64`.
 
 ### `gha-runner-cpus`
 

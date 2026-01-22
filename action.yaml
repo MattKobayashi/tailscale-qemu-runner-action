@@ -12,6 +12,10 @@ inputs:
     default: "http://archive.ubuntu.com/ubuntu"
     description: "The APT mirror to configure in the self-hosted runner VM."
     required: false
+  gha-runner-arch:
+    default: "x64"
+    description: "The CPU architecture of the self-hosted runner VM. Valid values are `x64` and `arm64`."
+    required: false
   gha-runner-cpus:
     default: "4"
     description: "The number of CPUs to allocate to the self-hosted runner VM."
@@ -99,6 +103,35 @@ runs:
         set -ex
         echo "runner-id=$(uuidgen)" >> "$GITHUB_OUTPUT"
       shell: bash
+    - id: map-arch
+      name: Map runner architecture
+      run: |
+        set -ex
+        case "${{ inputs.gha-runner-arch }}" in
+          x64)
+            echo "docker-arch=amd64" >> "$GITHUB_OUTPUT"
+            echo "github-arch=x64" >> "$GITHUB_OUTPUT"
+            echo "qemu-arch=x86_64" >> "$GITHUB_OUTPUT"
+            echo "qemu-cpu=host" >> "$GITHUB_OUTPUT"
+            echo "qemu-machine=pc" >> "$GITHUB_OUTPUT"
+            echo "ubuntu-arch=amd64" >> "$GITHUB_OUTPUT"
+            echo "default-mirror=http://archive.ubuntu.com/ubuntu" >> "$GITHUB_OUTPUT"
+            ;;
+          arm64)
+            echo "docker-arch=arm64" >> "$GITHUB_OUTPUT"
+            echo "github-arch=arm64" >> "$GITHUB_OUTPUT"
+            echo "qemu-arch=aarch64" >> "$GITHUB_OUTPUT"
+            echo "qemu-cpu=max" >> "$GITHUB_OUTPUT"
+            echo "qemu-machine=virt" >> "$GITHUB_OUTPUT"
+            echo "ubuntu-arch=arm64" >> "$GITHUB_OUTPUT"
+            echo "default-mirror=http://ports.ubuntu.com/ubuntu-ports" >> "$GITHUB_OUTPUT"
+            ;;
+          *)
+            echo "Unsupported architecture: ${{ inputs.gha-runner-arch }}"
+            exit 1
+            ;;
+        esac
+      shell: bash
     - id: get-runner-version
       name: Get self-hosted runner version
       run: |
@@ -117,10 +150,10 @@ runs:
             latest_release=$(curl -s https://api.github.com/repos/actions/runner/releases/latest)
           fi
           if [ "$version" = "$(echo "$latest_release" | jq -r .tag_name | sed 's/^v//')" ]; then
-            sha=$(echo "$latest_release" | jq -r .body | sed -n 's/.*<!-- BEGIN SHA linux-x64 -->\(.*\)<!-- END SHA linux-x64 -->.*/\1/p')
+            sha=$(echo "$latest_release" | jq -r .body | sed -n 's/.*<!-- BEGIN SHA linux-${{ steps.map-arch.outputs.github-arch }} -->\(.*\)<!-- END SHA linux-${{ steps.map-arch.outputs.github-arch }} -->.*/\1/p')
           else
             release_info=$(curl -s https://api.github.com/repos/actions/runner/releases/tags/v$version)
-            sha=$(echo "$release_info" | jq -r .body | sed -n 's/.*<!-- BEGIN SHA linux-x64 -->\(.*\)<!-- END SHA linux-x64 -->.*/\1/p')
+            sha=$(echo "$release_info" | jq -r .body | sed -n 's/.*<!-- BEGIN SHA linux-${{ steps.map-arch.outputs.github-arch }} -->\(.*\)<!-- END SHA linux-${{ steps.map-arch.outputs.github-arch }} -->.*/\1/p')
           fi
         fi
         echo "version=$version" >> "$GITHUB_OUTPUT"
@@ -157,10 +190,10 @@ runs:
             }
           primary:
             - arches: [default]
-              uri: ${{ inputs.gha-runner-apt-mirror }}
+              uri: ${{ inputs.gha-runner-apt-mirror != 'http://archive.ubuntu.com/ubuntu' && inputs.gha-runner-apt-mirror || steps.map-arch.outputs.default-mirror }}
           sources:
             docker:
-              source: 'deb [arch=amd64] https://download.docker.com/linux/ubuntu noble stable'
+              source: 'deb [arch=${{ steps.map-arch.outputs.docker-arch }}] https://download.docker.com/linux/ubuntu noble stable'
               key: |
                 -----BEGIN PGP PUBLIC KEY BLOCK-----
                 
@@ -259,9 +292,9 @@ runs:
           - content: |
               #!/bin/bash
               cd /opt/actions-runner
-              curl -o actions-runner-linux-x64-${{ steps.get-runner-version.outputs.version }}.tar.gz -L https://github.com/actions/runner/releases/download/v${{ steps.get-runner-version.outputs.version }}/actions-runner-linux-x64-${{ steps.get-runner-version.outputs.version }}.tar.gz
-              echo "${{ steps.get-runner-version.outputs.sha }}  actions-runner-linux-x64-${{ steps.get-runner-version.outputs.version }}.tar.gz" | shasum -a 256 -c
-              tar xzf actions-runner-linux-x64-${{ steps.get-runner-version.outputs.version }}.tar.gz
+              curl -o actions-runner-linux-${{ steps.map-arch.outputs.github-arch }}-${{ steps.get-runner-version.outputs.version }}.tar.gz -L https://github.com/actions/runner/releases/download/v${{ steps.get-runner-version.outputs.version }}/actions-runner-linux-${{ steps.map-arch.outputs.github-arch }}-${{ steps.get-runner-version.outputs.version }}.tar.gz
+              echo "${{ steps.get-runner-version.outputs.sha }}  actions-runner-linux-${{ steps.map-arch.outputs.github-arch }}-${{ steps.get-runner-version.outputs.version }}.tar.gz" | shasum -a 256 -c
+              tar xzf actions-runner-linux-${{ steps.map-arch.outputs.github-arch }}-${{ steps.get-runner-version.outputs.version }}.tar.gz
               sudo /opt/actions-runner/bin/installdependencies.sh
               /opt/actions-runner/config.sh --ephemeral --labels ${{ inputs.gha-runner-labels }} --token ${{ steps.get-token.outputs.reg-token }} --unattended --url https://github.com/${{ github.repository }}
               /opt/actions-runner/run.sh
@@ -285,12 +318,12 @@ runs:
       name: Get Ubuntu minimal cloud image (if not present)
       run: |
         ssh -o StrictHostKeyChecking=no ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} /bin/bash <<ENDSSH
-          if test ! -s /tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-amd64.img
+          if test ! -s /tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-${{ steps.map-arch.outputs.ubuntu-arch }}.img
           then
             wget --progress=dot:mega -P /tmp/actions-runners \
-            https://cloud-images.ubuntu.com/minimal/releases/noble/release/ubuntu-24.04-minimal-cloudimg-amd64.img
+            https://cloud-images.ubuntu.com/minimal/releases/noble/release/ubuntu-24.04-minimal-cloudimg-${{ steps.map-arch.outputs.ubuntu-arch }}.img
           fi
-          cp /tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-amd64.img /tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-boot.img
+          cp /tmp/actions-runners/ubuntu-24.04-minimal-cloudimg-${{ steps.map-arch.outputs.ubuntu-arch }}.img /tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-boot.img
           qemu-img resize /tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-boot.img ${{ inputs.gha-runner-disk }}
         ENDSSH
       shell: bash
@@ -299,14 +332,15 @@ runs:
       name: Start self-hosted runner VM
       run: |
         ssh -o StrictHostKeyChecking=no ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} /bin/bash <<ENDSSH &
-          qemu-system-x86_64 -m ${{ inputs.gha-runner-mem }} \
-          -cpu host \
+          qemu-system-${{ steps.map-arch.outputs.qemu-arch }} -m ${{ inputs.gha-runner-mem }} \
+          -cpu ${{ steps.map-arch.outputs.qemu-cpu }} \
           -drive file=/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-boot.img,index=0,format=qcow2,media=disk,snapshot=on \
           -drive file=/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-seed.img,index=1,media=cdrom \
-          -machine accel=kvm:tcg \
+          -machine ${{ steps.map-arch.outputs.qemu-machine }},accel=kvm:tcg \
           -net nic,model=virtio \
           -net user \
           -nographic \
+          -serial mon:stdio \
           -smp cpus=${{ inputs.gha-runner-cpus }}
         ENDSSH
       shell: bash
@@ -315,14 +349,15 @@ runs:
       name: Start self-hosted runner VM (debug mode)
       run: |
         ssh -o StrictHostKeyChecking=no ${{ inputs.ssh-user }}@${{ inputs.ssh-host }} /bin/bash <<ENDSSH
-          qemu-system-x86_64 -m ${{ inputs.gha-runner-mem }} \
-          -cpu host \
+          qemu-system-${{ steps.map-arch.outputs.qemu-arch }} -m ${{ inputs.gha-runner-mem }} \
+          -cpu ${{ steps.map-arch.outputs.qemu-cpu }} \
           -drive file=/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-boot.img,index=0,format=qcow2,media=disk,snapshot=on \
           -drive file=/tmp/actions-runners/${{ steps.generate-runner-id.outputs.runner-id }}-seed.img,index=1,media=cdrom \
-          -machine accel=kvm:tcg \
+          -machine ${{ steps.map-arch.outputs.qemu-machine }},accel=kvm:tcg \
           -net nic,model=virtio \
           -net user \
           -nographic \
+          -serial mon:stdio \
           -smp cpus=${{ inputs.gha-runner-cpus }}
         ENDSSH
       shell: bash
