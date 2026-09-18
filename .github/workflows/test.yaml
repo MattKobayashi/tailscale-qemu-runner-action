@@ -4,7 +4,7 @@ jobs:
     env:
       TS_HOST: 100.102.37.118
     name: Setup
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
